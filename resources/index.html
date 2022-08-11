@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{TITLE}</title>
+<style>
+body {
+    font-family: Arial;
+}
+
+a {text-decoration:none}
+
+h4 {
+    margin: 0.3em 0em 0.0em 0em;
+}
+
+.plot-element {
+    text-align: center;
+    border-width:1px;
+    border-style:solid;
+    border-color: rgb(210,210,210);
+    margin:4px;
+    font-size:14px;
+}
+ 
+img {
+    margin:0px;
+    max-width:400px;
+    height:auto;
+    /*width:400px;*/
+}
+
+.gallery {
+    max-width: 100%
+}
+ 
+.isotope-item {
+    z-index: 2;
+}
+.isotope-hidden.isotope-item {
+    pointer-events: none;
+    z-index: 1;
+}
+.isotope,
+.isotope .isotope-item {
+  /* change duration value to whatever you like */
+    -webkit-transition-duration: 0.8s;
+    -moz-transition-duration: 0.8s;
+    transition-duration: 0.8s;
+}
+.isotope {
+    -webkit-transition-property: height, width;
+    -moz-transition-property: height, width;
+    transition-property: height, width;
+}
+.isotope .isotope-item {
+    -webkit-transition-property: -webkit-transform, opacity;
+    -moz-transition-property: -moz-transform, opacity;
+    transition-property: transform, opacity;
+}
+
+input[type="text"] {
+  font-size: 20px;
+}
+
+/* ---- button ---- */
+.button {
+  display: inline-block;
+  padding: 0.5em 1.0em;
+  background: #EEE;
+  border: none;
+  border-radius: 7px;
+  background-image: linear-gradient( to bottom, hsla(0, 0%, 0%, 0), hsla(0, 0%, 0%, 0.2) );
+  color: #222;
+  font-family: sans-serif;
+  font-size: 16px;
+  /*text-shadow: 0 1px white;*/
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #8CF;
+  /*text-shadow: 0 1px hsla(0, 0%, 100%, 0.5);*/
+  color: #222;
+}
+
+.button:active,
+.button.is-checked {
+  background-color: #28F;
+}
+
+.button.is-checked {
+  color: white;
+  /*text-shadow: 0 -1px hsla(0, 0%, 0%, 0.8);*/
+}
+
+.button:active {
+  box-shadow: inset 0 1px 10px hsla(0, 0%, 0%, 0.8);
+}
+
+/* ---- button-group ---- */
+.button-group:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.button-group .button {
+  float: left;
+  border-radius: 0;
+  margin-left: 0;
+  margin-right: 1px;
+}
+
+.button-group .button:first-child { border-radius: 0.5em 0 0 0.5em; }
+.button-group .button:last-child { border-radius: 0 0.5em 0.5em 0; }
+
+.urlcopybtn { margin: 0 0 0 0.5em;}
+
+</style>
+<script src="https://code.jquery.com/jquery-latest.js" type="text/javascript"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.css" type="text/css" media="screen"/>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js"></script>
+<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script type="text/javascript">
+  var thisHash = window.location.hash;
+  $(document).ready(function() {
+    $(".fancybox").fancybox({
+      openEffect  : 'none',
+      closeEffect : 'none',
+      padding : 0,
+      prevEffect    : 'none',
+      nextEffect    : 'none',
+      beforeShow: function() {
+          var id = this.element.attr("id")
+          if (id) {
+              if(history.replaceState) {
+                  history.replaceState(null, null, "#"+id);
+              }
+              else {
+                  window.location.hash = id;
+              }
+          }
+      },
+      beforeClose: function() {
+          if(history.replaceState) {
+              history.replaceState(null, null, "#");
+          }
+          else {
+              window.location.hash = "";
+          }
+      }
+        // closeBtn    : false,
+      // helpers   : {
+      //   title : { type : 'inside' }
+      // }
+    });
+    if (thisHash) {
+      document.getElementById(thisHash.replace('#','')).click();
+    }
+  });
+</script>
+</head>
+<body><a name="top"></a>
+
+{LINKS}
+ 
+<p><a href="download_all.php">Download all files</a>{OTHERFILESJUMP}</p>
+
+<hr>
+
+<div class="filters">
+{BUTTONS}
+</div>
+
+{SEARCH}
+
+<div class="gallery">
+{ELEMENTS}
+</div>
+
+{OTHERFILES}
+
+<script type="text/javascript">
+ // function to select the URL displayed in documentUrl and copy it to the clipboard
+ function CopyUrl() {
+    $('.documentUrl').select()
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+ }
+
+ // extract options from url as dict
+	function urlParameter(options) {
+		"use strict";
+		/*global window, document*/
+
+		var url_search_arr,
+			option_key,
+			i,
+			urlObj,
+			get_param,
+			key,
+			val,
+			url_query,
+			url_get_params = {},
+			a = document.createElement('a'),
+			default_options = {
+				'url': window.location.href,
+				'unescape': true,
+				'convert_num': true
+			};
+
+		if (typeof options !== "object") {
+			options = default_options;
+		} else {
+			for (option_key in default_options) {
+				if (default_options.hasOwnProperty(option_key)) {
+					if (options[option_key] === undefined) {
+						options[option_key] = default_options[option_key];
+					}
+				}
+			}
+		}
+
+		a.href = options.url;
+		url_query = a.search.substring(1);
+		url_search_arr = url_query.split('&');
+
+		if (url_search_arr[0].length > 1) {
+			for (i = 0; i < url_search_arr.length; i += 1) {
+				get_param = url_search_arr[i].split("=");
+
+				if (options.unescape) {
+					key = decodeURIComponent(get_param[0]);
+					val = decodeURIComponent(get_param[1]);
+				} else {
+					key = get_param[0];
+					val = get_param[1];
+				}
+
+				if (options.convert_num) {
+					if (val.match(/^\d+$/)) {
+						val = parseInt(val, 10);
+					} else if (val.match(/^\d+\.\d+$/)) {
+						val = parseFloat(val);
+					}
+				}
+
+				if (url_get_params[key] === undefined) {
+					url_get_params[key] = val;
+				} else if (typeof url_get_params[key] === "string") {
+					url_get_params[key] = [url_get_params[key], val];
+				} else {
+					url_get_params[key].push(val);
+				}
+
+				get_param = [];
+			}
+		}
+
+		return url_get_params;
+	}
+
+ $(window).load(function(){
+
+    // try to not save the options in the history (seems not to work)
+    if(history.replaceState) {
+	    history.replaceState(null, null, window.location.search)
+    }
+
+    // display inital URL
+    updateUrl()
+
+    // get the parameters for trom the URL
+	var options = urlParameter()
+
+     var qsRegex
+     var Regex
+    // check if quicksearch is in the options, if so restore the requested state
+     if ("qsRegex" in options) {
+         // restore the search regex
+		Regex = options["qsRegex"];
+        // also restore the value of the input field (currently does not work)
+		 $('.quicksearch').val(Regex);
+	}
+     var buttonFilter;
+     // check if buttons are in the options, if so set the buttons to them
+     if ("buttons" in options) {
+         // restore filter
+        buttonFilter = options["buttons"]
+        // also restore state of buttons
+        var $checkedButtons = buttonFilter.split(".")
+        for (var index = 0; index < $checkedButtons.length; index++)
+        {
+            if ($checkedButtons[index] != "") {
+                $('.button-group').each(function(i, buttonGroup) {
+                    var $buttonGroup = $( buttonGroup );
+                    var $activeButton = $buttonGroup.find("[data-filter=\"."+$checkedButtons[index]+"\"]")
+                    if($activeButton.length)
+                    {
+                        $buttonGroup.find('.is-checked').removeClass('is-checked');
+                        $activeButton.addClass('is-checked');
+                    }
+                })
+            }
+        }
+    }
+
+     var $container = $('.gallery');
+
+     $container.isotope({
+          filter: function() {
+            var $this = $(this);
+            var searchResult = qsRegex ? $this.find('.file-title').text().match( qsRegex ) : true;
+            var buttonResult = buttonFilter ? $this.is( buttonFilter ) : true;
+            var result = searchResult && buttonResult;
+            if(result == true) {
+              $this.find(".fancybox").attr("data-fancybox-group", "gallery");
+            } else { 
+              $this.find(".fancybox").attr("data-fancybox-group", "notgallery");
+            }
+            return result;
+          },
+          resizable: false
+     });
+  
+     // store filter for each group
+     var filters = {};
+
+     $('.filters').on( 'click', '.button', function() {
+       var $this = $(this);
+       // get group key
+       var $buttonGroup = $this.parents('.button-group');
+       var filterGroup = $buttonGroup.attr('data-filter-group');
+       // set filter for group
+       filters[ filterGroup ] = $this.attr('data-filter');
+       // combine filters
+       buttonFilter = concatValues( filters );
+       // update the displayed URL
+       updateUrl()
+       // set filter for Isotope
+       $container.isotope();
+     });
+
+
+     // change is-checked class on buttons
+     $('.button-group').each( function( i, buttonGroup ) {
+       var $buttonGroup = $( buttonGroup );
+       $buttonGroup.on( 'click', 'button', function() {
+         $buttonGroup.find('.is-checked').removeClass('is-checked');
+         $( this ).addClass('is-checked');
+       });
+     });
+
+     // use value of search field to filter
+     var $quicksearch = $('.quicksearch').keyup( debounce( function() {
+       try {
+         qsRegex = new RegExp( $quicksearch.val(), 'gi' );
+       }
+       catch(e) {
+         return 1
+       }
+       // update the displayed URL
+       updateUrl()
+       $container.isotope();
+     }, 200 ) );
+
+     function debounce( fn, threshold ) {
+       var timeout;
+       return function debounced() {
+         if ( timeout ) {
+           clearTimeout( timeout );
+         }
+         function delayed() {
+           fn();
+           timeout = null;
+         }
+         timeout = setTimeout( delayed, threshold || 100 );
+       }
+     }
+
+     // function to update the URL displayed
+     function updateUrl() {
+       var Regex = $('.quicksearch').val()
+       var pressedButtons
+       $('.button').each(function(i, button) {
+       var $button = $(button);
+       if ($button.is(".is-checked")) {
+           pressedButtons = pressedButtons ? pressedButtons+$button.attr('data-filter') : $button.attr('data-filter')
+       }
+       });
+       var url = [location.protocol, '//', location.host, location.pathname].join('')
+       if (Regex)
+       {
+           url += "?qsRegex=" + encodeURIComponent(Regex)
+       }
+       if (pressedButtons)
+       {
+           url += ((qsRegex) ? "&" : "?") + "buttons=" + encodeURIComponent(pressedButtons)
+       }
+       $('.documentUrl').val(url)
+    }
+
+     // flatten object by concatting values
+     function concatValues( obj ) {
+       var value = '';
+       for ( var prop in obj ) {
+         value += obj[ prop ];
+       }
+       return value;
+     }
+
+     // Trigger an update with the mathjax has loaded
+     MathJax.Hub.Register.StartupHook("End",function () { $container.isotope('layout'); });
+
+     // $container.imagesLoaded().progress( function() {
+     //   $container.isotope('layout');
+     // });
+
+ });
+</script>
+
+
+</body>
+</html> 
