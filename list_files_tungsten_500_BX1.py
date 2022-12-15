@@ -1,0 +1,12 @@
+list_files=[
+    "/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_500_BXs_1/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_0.root",
+    "/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_500_BXs_1/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_1.root",
+    "/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_500_BXs_1/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_2.root",
+    "/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_500_BXs_1/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_3.root",
+    "/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_500_BXs_1/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_4.root",
+    "/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_500_BXs_1/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_5.root",
+    "/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_500_BXs_1/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_6.root",
+    "/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_500_BXs_1/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_7.root",
+    "/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_500_BXs_1/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_8.root",
+    "/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_500_BXs_1/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_9.root",
+]

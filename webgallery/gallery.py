@@ -80,7 +80,7 @@ def ProcessDir(indir, is_parent=True, subdirs=[]):
 	
 	groups = defaultdict(set)
 	
-	for f, all_exts in sorted(base_files.items()):
+	for f, all_exts in sorted(base_files.iteritems()):
 		exts = [e for e in all_exts if e not in ['.png', args.metadata]]
 		tags=''
 
@@ -89,7 +89,7 @@ def ProcessDir(indir, is_parent=True, subdirs=[]):
 			json_data = {}
 			with open(os.path.join(indir,f+'.json')) as jsonfile:
 				json_data = json.load(jsonfile)
-			for key, val in json_data.items():
+			for key, val in json_data.iteritems():
 				groups[key].add(val)
 			if len(json_data) > 0:
 				tags = ' ' + ' '.join([CleanStr(x) for x in json_data.values()])
@@ -110,7 +110,7 @@ def ProcessDir(indir, is_parent=True, subdirs=[]):
 	button_groups=''
 	# The user has added some properties so we need to make buttons
 	if len(groups) > 0:
-		for key, val in groups.items():
+		for key, val in groups.iteritems():
 			buttons='\n'.join([BUTTON.format(NAME=v, FILTER=CleanStr(v)) for v in sorted(val)])
 			button_groups += BUTTON_GROUP.format(GROUP=CleanStr(key), TITLE=key, BUTTONS=buttons)
 	
@@ -129,7 +129,7 @@ def ProcessDir(indir, is_parent=True, subdirs=[]):
 	other_html = []
 	if len(other_files) > 0:
 		added = 0
-		for f, all_exts in sorted(other_files.items()):
+		for f, all_exts in sorted(other_files.iteritems()):
 			for ext in all_exts:
 				if ext in ['.html', '.htm', '.php'] and not "mlfit" in f: continue
 				added += 1
