@@ -85,7 +85,7 @@ General instructions:
     cp -r e0ppw_7_0  /etpwww/web/<your_login_name>/public_html/<your_web_directory>/
     python gallery.py /etpwww/web/<your_login_name>/public_html/<your_web_directory>/e0ppw_7_0
 
-One specific example:
+Some specific examples:
 
     mkdir -p /etpwww/web/ntrevisa/public_html/2022_08_11/
 
