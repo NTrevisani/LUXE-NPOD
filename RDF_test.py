@@ -116,7 +116,10 @@ print('{} entries passed all filters'.format(entries3.GetValue()))
 # filter_photon = "pdg == 22"
 # df_photons = df3.Filter(filter_photon)
 
-df_photons = df.Define("mask",     "detid == 9000 && abs(x) < 999.0 && abs(y) < 999.0 && abs(z-16000) < 0.1 && pdg == 22") \
+det_position = "16000"
+if length == "LegacyCfg": det_position = "17130"
+
+df_photons = df.Define("mask",     "detid == 9000 && abs(x) < 999.0 && abs(y) < 999.0 && abs(z-{}) < 0.1 && pdg == 22".format(det_position)) \
                .Redefine("E",      "E[mask]")       \
                .Redefine("pdg",    "pdg[mask]")     \
                .Redefine("theta",  "theta[mask]")   \
@@ -147,7 +150,7 @@ print(df_photons_2.GetColumnNames())
 # Preparing Neutrons RDF
 ########################
 
-df_neutrons = df.Define("mask",    "detid == 9000 && abs(x) < 999.0 && abs(y) < 999.0 && abs(z-16000) < 0.1 && pdg == 2112") \
+df_neutrons = df.Define("mask",    "detid == 9000 && abs(x) < 999.0 && abs(y) < 999.0 && abs(z-{}) < 0.1 && pdg == 2112".format(det_position)) \
                .Redefine("E",      "E[mask]")       \
                .Redefine("pdg",    "pdg[mask]")     \
                .Redefine("theta",  "theta[mask]")   \
