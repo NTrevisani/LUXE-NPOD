@@ -46,21 +46,7 @@ print("Dump length:    {}".format(opt.length))
 print("Bunch crossing: {}".format(opt.BX))
 print("File number:    {}".format(opt.number))
 
-# ch = ROOT.TChain("Tracks","Tracks")
-# ch.AddFile("/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_1000_BXs_0/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_0.root")
-# ch.AddFile("/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_1000_BXs_0/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_1.root")
-# ch.AddFile("/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_1000_BXs_0/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_2.root")
-# ch.AddFile("/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_1000_BXs_0/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_3.root")
-# ch.AddFile("/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_1000_BXs_0/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_4.root")
-# ch.AddFile("/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_1000_BXs_0/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_5.root")
-# ch.AddFile("/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_1000_BXs_0/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_6.root")
-# ch.AddFile("/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_1000_BXs_0/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_7.root")
-# ch.AddFile("/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_1000_BXs_0/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_8.root")
-# ch.AddFile("/ceph/rquishpe/luxe/npod/phase1/g4/tungsten/run_dumpZ_1000_BXs_0/luxe_npod_signal_e1npod_0_5_165gev_cv9qgsphp_tv33_hv1_9.root")
-
 df = ROOT.RDataFrame("Tracks", input_file)
-# df = ROOT.RDataFrame(ch)
-
 print(df.GetColumnNames())
 
 ####################
@@ -69,7 +55,7 @@ print(df.GetColumnNames())
 
 # https://root.cern/doc/master/classROOT_1_1VecOps_1_1RVec.html
 # "E", "pdg","detid","weight","theta","phi","vtxx","vtxy","vtxz","px","py","pz","x","y","z","t"
-df2 = df.Define("mask",     "detid == 9000 && abs(x) < 999.0 && abs(y) < 999.0") \
+df2 = df.Define("mask",     "detid == 9000 && sqrt(x*x+y*y)< 1000.0") \
         .Redefine("E",      "E[mask]")       \
         .Redefine("pdg",    "pdg[mask]")     \
         .Redefine("theta",  "theta[mask]")   \
@@ -97,8 +83,6 @@ a2.Print()
 
 # (abs(df_tmp["z"]-16000) < 0.1) & (abs(df_tmp["x"]) < 999.0) & (abs(df_tmp["y"]) < 999.0) & (df_tmp["E"]>energy_cut)
 filter_tot_energy = "Sum(E) > 0"
-filter_pos_x      = "abs(x) < 999.0"
-filter_pos_y      = "abs(y) < 999.0"
 filter_E          = "E > 0.5"
 df3 = df2.Filter(filter_tot_energy)
 
@@ -119,7 +103,7 @@ print('{} entries passed all filters'.format(entries3.GetValue()))
 det_position = "16000"
 if length == "LegacyCfg": det_position = "17130"
 
-df_photons = df.Define("mask",     "detid == 9000 && abs(x) < 999.0 && abs(y) < 999.0 && abs(z-{}) < 0.1 && pdg == 22".format(det_position)) \
+df_photons = df.Define("mask",     "detid==9000 && sqrt(x*x+y*y)<1000.0 && pdg==22 && abs(z-{})<0.1".format(det_position)\
                .Redefine("E",      "E[mask]")       \
                .Redefine("pdg",    "pdg[mask]")     \
                .Redefine("theta",  "theta[mask]")   \
@@ -150,7 +134,7 @@ print(df_photons_2.GetColumnNames())
 # Preparing Neutrons RDF
 ########################
 
-df_neutrons = df.Define("mask",    "detid == 9000 && abs(x) < 999.0 && abs(y) < 999.0 && abs(z-{}) < 0.1 && pdg == 2112".format(det_position)) \
+df_neutrons = df.Define("mask",    "detid==9000 && sqrt(x*x+y*y)<1000.0 && pdg==2112 && abs(z-{})<0.1".format(det_position)\
                .Redefine("E",      "E[mask]")       \
                .Redefine("pdg",    "pdg[mask]")     \
                .Redefine("theta",  "theta[mask]")   \
