@@ -18,6 +18,24 @@ import optparse
 import tdrStyle as tdrStyle
 tdrStyle.setTDRStyle()
 
+
+# Function to define new variable
+def add_variable(rdf, var_name, formula):
+    """Add generic variable to dataframe.
+
+    Arguments:
+    rdf:      input rdataframe
+    var_name: name of the new variable
+    formula:  definition of the new variale.
+        Currenlty, only simple expressions allowed.
+    """
+
+    new_rdf = rdf.Define(var_name, formula)
+
+    return new_rdf
+
+
+
 # Plotting function
 def plot_histo(rdf, variable, bins, min_x, max_x, weight="1", title="", x_label="", y_label="", file_name=None, folder_name=None, file_format="png", y_log=False):
     """Plot distributions from dataframe.
@@ -51,7 +69,9 @@ def plot_histo(rdf, variable, bins, min_x, max_x, weight="1", title="", x_label=
     histogram.SetMarkerColor(ROOT.kBlue)
     histogram.Draw()
     if y_log == True:
+        histogram.GetYaxis().SetRangeUser(1,10e8)
         c1.SetLogy()
+        histogram.GetYaxis().SetRangeUser(1,10e8)
         output_name =  "log_" + output_name
         
     if folder_name:
@@ -71,12 +91,13 @@ def plot_histo(rdf, variable, bins, min_x, max_x, weight="1", title="", x_label=
 usage = 'usage: %prog [options]'
 parser = optparse.OptionParser(usage)
     
-parser.add_option('--input_folder', dest='input_folder', help='Directory with input rootfiles', default='rootfiles') 
-parser.add_option('--particle',     dest='particle',     help='Particle to inspect',            default='Photons') 
-parser.add_option('--material',     dest='material',     help='Dump material',                  default='tungsten') 
-parser.add_option('--length',       dest='length',       help='Dump length',                    default='1000') 
-parser.add_option('--BX',           dest='BX',           help='Number of bunch crossings',      default='1') 
-parser.add_option('--number',       dest='number',       help='Progressing file number',        default='0') 
+parser.add_option('--input_folder',  dest='input_folder',  help='Directory with input rootfiles', default='rootfiles') 
+parser.add_option('--particle',      dest='particle',      help='Particle to inspect',            default='Photons') 
+parser.add_option('--material',      dest='material',      help='Dump material',                  default='tungsten') 
+parser.add_option('--length',        dest='length',        help='Dump length',                    default='1000') 
+parser.add_option('--BX',            dest='BX',            help='Number of bunch crossings',      default='1') 
+parser.add_option('--number',        dest='number',        help='Progressing file number',        default='0') 
+parser.add_option('--output_folder', dest='output_folder', help='Directory where to store plots', default='plots') 
 
 # Assigning variables to the inputs
 (opt, args) = parser.parse_args()
@@ -84,12 +105,13 @@ parser.add_option('--number',       dest='number',       help='Progressing file 
 sys.argv.append( '-b' )
 ROOT.gROOT.SetBatch()
     
-input_folder = opt.input_folder
-particle     = opt.particle
-material     = opt.material
-length       = opt.length
-BX           = opt.BX
-number       = opt.number
+input_folder  = opt.input_folder
+particle      = opt.particle
+material      = opt.material
+length        = opt.length
+BX            = opt.BX
+number        = opt.number
+output_folder = opt.output_folder
 
 if BX == 0:
     raise ValueError("We must have at least 1 BX !!")
@@ -101,6 +123,7 @@ print("Dump material:  {}".format(opt.material))
 print("Dump length:    {}".format(opt.length))
 print("Bunch crossing: {}".format(opt.BX))
 print("File number:    {}".format(opt.number))
+print("Output folder:  {}".format(opt.output_folder))
 
 # Open rootfiles
 ################
@@ -112,30 +135,82 @@ print(df.GetColumnNames())
 det_position = "16000"
 if length == "LegacyCfg": det_position = "17130"
 
+# Extrapolate particles positions, when detector distance is changed
+# New z position of the BSM detector (absolute value in the geometry)
+# - dump length 1000 mm -> z_det = 15719.03 mm
+# - dump length 500  mm -> z_det = 15219.03 mm
+# - dump lenght 300  mm -> z_det = 15019.03 mm
+
+if length == "Extrapolate_1000": det_position = 15630.0 # 15719.03
+if length == "Extrapolate_500":  det_position = 15130.0 # 15219.03
+if length == "Extrapolate_300":  det_position = 14930.0 # 15019.03
+
 # We are currently assuming we used a factor 10 less photons than required, but it is not true.
 # We thus adjust the per-event weight, dividing it by 10
 weight_adjust = 0.1
 
 # Start plotting - do we want to move the actual list of plots in a separated dictionary and leave here only a loop on the dictionary items?
-plot_histo(df, "E", 150, 0., 15., weight="{}*(E>0 && abs(z-{})<0.1)*weight/{}".format(weight_adjust,det_position,BX), title="Energy", x_label="Energy [GeV]", y_label="Particles/bin", folder_name="plots_test", file_name="{}_{}_{}_Energy".format(particle,material,length))
-plot_histo(df, "E", 150, 0., 15., weight="{}*(E>0 && abs(z-{})<0.1)*weight/{}".format(weight_adjust,det_position,BX), title="Energy", x_label="Energy [GeV]", y_label="Particles/bin", folder_name="plots_test", file_name="{}_{}_{}_Energy".format(particle,material,length), y_log=True)
+plot_histo(df, "E", 150, 0., 15., weight="{}*(E>0 && abs(z-{})<0.1)*weight/{}".format(weight_adjust,det_position,BX), title="Energy", x_label="Energy [GeV]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_Energy".format(particle,material,length))
+plot_histo(df, "E", 150, 0., 15., weight="{}*(E>0 && abs(z-{})<0.1)*weight/{}".format(weight_adjust,det_position,BX), title="Energy", x_label="Energy [GeV]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_Energy".format(particle,material,length), y_log=True)
 
-plot_histo(df, "E", 40, 0., 2., weight="{}*(E>0 && abs(z-{})<0.1)*weight/{}".format(weight_adjust,det_position,BX), title="Energy", x_label="Energy [GeV]", y_label="Particles/bin", folder_name="plots_test", file_name="{}_{}_{}_Energy_zoom".format(particle,material,length))
-plot_histo(df, "E", 40, 0., 2., weight="{}*(E>0 && abs(z-{})<0.1)*weight/{}".format(weight_adjust,det_position,BX), title="Energy", x_label="Energy [GeV]", y_label="Particles/bin", folder_name="plots_test", file_name="{}_{}_{}_Energy_zoom".format(particle,material,length), y_log=True)
+plot_histo(df, "E", 40, 0., 2., weight="{}*(E>0 && abs(z-{})<0.1)*weight/{}".format(weight_adjust,det_position,BX), title="Energy", x_label="Energy [GeV]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_Energy_zoom".format(particle,material,length))
+plot_histo(df, "E", 40, 0., 2., weight="{}*(E>0 && abs(z-{})<0.1)*weight/{}".format(weight_adjust,det_position,BX), title="Energy", x_label="Energy [GeV]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_Energy_zoom".format(particle,material,length), y_log=True)
 
-plot_histo(df, "t", 150, 0., 15., weight="{}*(E>0 && abs(z-{})<0.1)*weight/{}".format(weight_adjust,det_position,BX), title="Time of Arrival", x_label="Time of arrival [ns]", y_label="Particles/bin", folder_name="plots_test", file_name="{}_{}_{}_time".format(particle,material,length))
-plot_histo(df, "t", 150, 0., 15., weight="{}*(E>0 && abs(z-{})<0.1)*weight/{}".format(weight_adjust,det_position,BX), title="Time of Arrival", x_label="Time of arrival [ns]", y_label="Particles/bin", folder_name="plots_test", file_name="{}_{}_{}_time".format(particle,material,length), y_log=True)
-
-
-plot_histo(df, "vtxz", 1400, 5000.0, 19000.0, "{}*weight*(detid==9000 && sqrt(vtxx*vtxx+vtxy*vtxy)<300.0)/{}".format(weight_adjust,BX), title="Vertex z position for particles reaching the BSM detector", x_label="Vertex z position [mm]", y_label="Particles/bin", folder_name="plots_test", file_name="{}_{}_{}_vtxz_BSM_calo".format(particle,material,length))
-plot_histo(df, "vtxz", 1400, 5000.0, 19000.0, "{}*weight*(detid==9000 && sqrt(vtxx*vtxx+vtxy*vtxy)<300.0)/{}".format(weight_adjust,BX), title="Vertex z position for particles reaching the BSM detector", x_label="Vertex z position [mm]", y_label="Particles/bin", folder_name="plots_test", file_name="{}_{}_{}_vtxz_BSM_calo".format(particle,material,length), y_log=True)
-
-plot_histo(df, "vtxz", 1400, 5000.0, 19000.0, "{}*weight*(detid==9000 && sqrt(vtxx*vtxx+vtxy*vtxy)<300.0)/{}".format(weight_adjust,BX), title="Vertex z position for particles reaching the BSM detector", x_label="Vertex z position [mm]", y_label="Particles/bin", folder_name="plots_test", file_name="{}_{}_{}_vtxz_BSM_calo_concreteStructure".format(particle,material,length))
-plot_histo(df, "vtxz", 1400, 5000.0, 19000.0, "{}*weight*(detid==9000 && sqrt(vtxx*vtxx+vtxy*vtxy)<300.0)/{}".format(weight_adjust,BX), title="Vertex z position for particles reaching the BSM detector", x_label="Vertex z position [mm]", y_label="Particles/bin", folder_name="plots_test", file_name="{}_{}_{}_vtxz_BSM_calo_concreteStructure".format(particle,material,length), y_log=True)
+plot_histo(df, "t", 150, 0., 15., weight="{}*(E>0 && abs(z-{})<0.1)*weight/{}".format(weight_adjust,det_position,BX), title="Time of Arrival", x_label="Time of arrival [ns]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_time".format(particle,material,length))
+plot_histo(df, "t", 150, 0., 15., weight="{}*(E>0 && abs(z-{})<0.1)*weight/{}".format(weight_adjust,det_position,BX), title="Time of Arrival", x_label="Time of arrival [ns]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_time".format(particle,material,length), y_log=True)
 
 
-plot_histo(df, "vtxz", 100, 13630.0, 14630.0, "{}*weight*(detid==9000 && sqrt(vtxx*vtxx+vtxy*vtxy)<300.0)/{}".format(weight_adjust,BX), title="Vertex z position in the dump for particles reaching the BSM detector", x_label="Vertex z position [mm]", y_label="Particles/bin", folder_name="plots_test", file_name="{}_{}_{}_vtxz_BSM_calo_zoom".format(particle,material,length))
-plot_histo(df, "vtxz", 100, 13630.0, 14630.0, "{}*weight*(detid==9000 && sqrt(vtxx*vtxx+vtxy*vtxy)<300.0)/{}".format(weight_adjust,BX), title="Vertex z position in the dump for particles reaching the BSM detector", x_label="Vertex z position [mm]", y_label="Particles/bin", folder_name="plots_test", file_name="{}_{}_{}_vtxz_BSM_calo_zoom".format(particle,material,length), y_log=True)
+plot_histo(df, "vtxz", 1400, 5000.0, 19000.0, "{}*weight*(detid==9000 && sqrt(vtxx*vtxx+vtxy*vtxy)<300.0)/{}".format(weight_adjust,BX), title="Vertex z position for particles reaching the BSM detector", x_label="Vertex z position [mm]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_vtxz_BSM_calo".format(particle,material,length))
+plot_histo(df, "vtxz", 1400, 5000.0, 19000.0, "{}*weight*(detid==9000 && sqrt(vtxx*vtxx+vtxy*vtxy)<300.0)/{}".format(weight_adjust,BX), title="Vertex z position for particles reaching the BSM detector", x_label="Vertex z position [mm]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_vtxz_BSM_calo".format(particle,material,length), y_log=True)
 
-plot_histo(df, "vtxz", 100, 13630.0, 14630.0, "{}*weight*(detid==9000)/{}".format(weight_adjust,BX), title="Vertex z position in the dump for particles reaching the BSM detector", x_label="Vertex z position [mm]", y_label="Particles/bin", folder_name="plots_test", file_name="{}_{}_{}_vtxz_BSM_calo_zoom_concreteStructure".format(particle,material,length))
-plot_histo(df, "vtxz", 100, 13630.0, 14630.0, "{}*weight*(detid==9000)/{}".format(weight_adjust,BX), title="Vertex z position in the dump for particles reaching the BSM detector", x_label="Vertex z position [mm]", y_label="Particles/bin", folder_name="plots_test", file_name="{}_{}_{}_vtxz_BSM_calo_zoom_concreteStructure".format(particle,material,length), y_log=True)
+plot_histo(df, "vtxz", 1400, 5000.0, 19000.0, "{}*weight*(detid==9000 && sqrt(vtxx*vtxx+vtxy*vtxy)<300.0)/{}".format(weight_adjust,BX), title="Vertex z position for particles reaching the BSM detector", x_label="Vertex z position [mm]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_vtxz_BSM_calo_concreteStructure".format(particle,material,length))
+plot_histo(df, "vtxz", 1400, 5000.0, 19000.0, "{}*weight*(detid==9000 && sqrt(vtxx*vtxx+vtxy*vtxy)<300.0)/{}".format(weight_adjust,BX), title="Vertex z position for particles reaching the BSM detector", x_label="Vertex z position [mm]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_vtxz_BSM_calo_concreteStructure".format(particle,material,length), y_log=True)
+
+
+plot_histo(df, "vtxz", 100, 13630.0, 14630.0, "{}*weight*(detid==9000 && sqrt(vtxx*vtxx+vtxy*vtxy)<300.0)/{}".format(weight_adjust,BX), title="Vertex z position in the dump for particles reaching the BSM detector", x_label="Vertex z position [mm]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_vtxz_BSM_calo_zoom".format(particle,material,length))
+plot_histo(df, "vtxz", 100, 13630.0, 14630.0, "{}*weight*(detid==9000 && sqrt(vtxx*vtxx+vtxy*vtxy)<300.0)/{}".format(weight_adjust,BX), title="Vertex z position in the dump for particles reaching the BSM detector", x_label="Vertex z position [mm]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_vtxz_BSM_calo_zoom".format(particle,material,length), y_log=True)
+
+plot_histo(df, "vtxz", 100, 13630.0, 14630.0, "{}*weight*(detid==9000)/{}".format(weight_adjust,BX), title="Vertex z position in the dump for particles reaching the BSM detector", x_label="Vertex z position [mm]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_vtxz_BSM_calo_zoom_concreteStructure".format(particle,material,length))
+plot_histo(df, "vtxz", 100, 13630.0, 14630.0, "{}*weight*(detid==9000)/{}".format(weight_adjust,BX), title="Vertex z position in the dump for particles reaching the BSM detector", x_label="Vertex z position [mm]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_vtxz_BSM_calo_zoom_concreteStructure".format(particle,material,length), y_log=True)
+
+
+# Original distance is always 1000 mm. We want to extrapolate to:
+# - 1500 mm
+# - 2000 mm
+
+z_new_1500 = (1500. - 1000.) + det_position
+z_new_2000 = (2000. - 1000.) + det_position
+
+# Since: 
+#
+# x - vtxx   x_new - vtxx
+# -------- = ------------
+# z - vtxz   z_new - vtxz
+
+# x_new = vtxx + (x - vtxx) * (z_new - vtxz) / (z - vtxz)
+# y_new = vtxy + (y - vtxy) * (z_new - vtxz) / (z - vtxz)
+
+df = add_variable(df, "x_new_1500", "vtxx + (x - vtxx) * ({} - vtxz) / (z - vtxz)".format(z_new_1500))
+df = add_variable(df, "x_new_2000", "vtxx + (x - vtxx) * ({} - vtxz) / (z - vtxz)".format(z_new_2000))
+
+df = add_variable(df, "y_new_1500", "vtxy + (y - vtxy) * ({} - vtxz) / (z - vtxz)".format(z_new_1500))
+df = add_variable(df, "y_new_2000", "vtxy + (y - vtxy) * ({} - vtxz) / (z - vtxz)".format(z_new_2000))
+
+# Plot distributions in the extrapolated detectors positions
+
+# Nominal position, detector radius = 1 m
+plot_histo(df, "E", 150, 0., 15., weight="{}*(E>0 && abs(z-{})<0.1 && sqrt(x*x+y*y)<1000)*weight/{}".format(weight_adjust,det_position,BX), title="Energy", x_label="Energy [GeV]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_Energy_detR1m".format(particle,material,length))
+plot_histo(df, "E", 150, 0., 15., weight="{}*(E>0 && abs(z-{})<0.1 && sqrt(x*x+y*y)<1000)*weight/{}".format(weight_adjust,det_position,BX), title="Energy", x_label="Energy [GeV]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_Energy_detR1m".format(particle,material,length), y_log=True)
+
+# Nominal position, detector radius = 0.5 m
+plot_histo(df, "E", 150, 0., 15., weight="{}*(E>0 && abs(z-{})<0.1 && sqrt(x*x+y*y)<500)*weight/{}".format(weight_adjust,det_position,BX), title="Energy", x_label="Energy [GeV]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_Energy_detR05m".format(particle,material,length))
+plot_histo(df, "E", 150, 0., 15., weight="{}*(E>0 && abs(z-{})<0.1 && sqrt(x*x+y*y)<500)*weight/{}".format(weight_adjust,det_position,BX), title="Energy", x_label="Energy [GeV]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_Energy_detR05m".format(particle,material,length), y_log=True)
+
+
+# Detector position 1500mm, detector radius = 1 m
+plot_histo(df, "E", 150, 0., 15., weight="{}*(E>0 && abs(z-{})<0.1 && sqrt(x_new_1500*x_new_1500+y_new_1500*y_new_1500)<1000)*weight/{}".format(weight_adjust,det_position,BX), title="Energy", x_label="Energy [GeV]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_Energy_detR1m_extrPos1500".format(particle,material,length))
+plot_histo(df, "E", 150, 0., 15., weight="{}*(E>0 && abs(z-{})<0.1 && sqrt(x_new_1500*x_new_1500+y_new_1500*y_new_1500)<1000)*weight/{}".format(weight_adjust,det_position,BX), title="Energy", x_label="Energy [GeV]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_Energy_detR1m_extrPos1500".format(particle,material,length), y_log=True)
+
+# Detector position 1500mm, detector radius = 0.5 m
+plot_histo(df, "E", 150, 0., 15., weight="{}*(E>0 && abs(z-{})<0.1 && sqrt(x_new_1500*x_new_1500+y_new_1500*y_new_1500)<500)*weight/{}".format(weight_adjust,det_position,BX), title="Energy", x_label="Energy [GeV]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_Energy_detR05m_extrPos1500".format(particle,material,length))
+plot_histo(df, "E", 150, 0., 15., weight="{}*(E>0 && abs(z-{})<0.1 && sqrt(x_new_1500*x_new_1500+y_new_1500*y_new_1500)<500)*weight/{}".format(weight_adjust,det_position,BX), title="Energy", x_label="Energy [GeV]", y_label="Particles/bin", folder_name=output_folder, file_name="{}_{}_{}_Energy_detR05m_extrPos1500".format(particle,material,length), y_log=True)

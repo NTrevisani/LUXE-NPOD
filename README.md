@@ -73,6 +73,29 @@ Older tests:
     python mkPlot.py --input_folder=rootfiles --particle=Neutrons --material=copper_run_old_no_flag --length=1000 --BX=1 --number=""
     python mkPlot.py --input_folder=rootfiles --particle=Photons  --material=copper_run_old_no_flag --length=1000 --BX=1 --number=""
 
+
+Extrapolation at different dump-detector distances:
+
+    python mkPlot.py --input_folder=rootfiles --particle=Neutrons --material=tungsten --length=Extrapolate_1000 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
+    python mkPlot.py --input_folder=rootfiles --particle=Photons  --material=tungsten --length=Extrapolate_1000 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
+
+    python mkPlot.py --input_folder=rootfiles --particle=Neutrons --material=tungsten --length=Extrapolate_500 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
+    python mkPlot.py --input_folder=rootfiles --particle=Photons  --material=tungsten --length=Extrapolate_500 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
+
+    python mkPlot.py --input_folder=rootfiles --particle=Neutrons --material=tungsten --length=Extrapolate_300 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
+    python mkPlot.py --input_folder=rootfiles --particle=Photons  --material=tungsten --length=Extrapolate_300 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
+
+
+    python mkPlot.py --input_folder=rootfiles --particle=Neutrons --material=lead --length=Extrapolate_1000 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
+    python mkPlot.py --input_folder=rootfiles --particle=Photons  --material=lead --length=Extrapolate_1000 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
+
+    python mkPlot.py --input_folder=rootfiles --particle=Neutrons --material=lead --length=Extrapolate_500 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
+    python mkPlot.py --input_folder=rootfiles --particle=Photons  --material=lead --length=Extrapolate_500 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
+
+    python mkPlot.py --input_folder=rootfiles --particle=Neutrons --material=lead --length=Extrapolate_300 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
+    python mkPlot.py --input_folder=rootfiles --particle=Photons  --material=lead --length=Extrapolate_300 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
+
+
 ### Copy your plots on the web
 
 General instructions:
@@ -100,6 +123,13 @@ Some specific examples:
 
     cp -r plots_test/ /etpwww/web/ntrevisa/public_html/2022_08_11/
     python gallery.py /etpwww/web/ntrevisa/public_html/2022_08_11/plots_test/
+
+
+    mkdir -p /etpwww/web/ntrevisa/public_html/2023_02_21/
+
+    cp -r plots_extrapolation /etpwww/web/ntrevisa/public_html/2023_02_21/
+    python gallery.py         /etpwww/web/ntrevisa/public_html/2023_02_21/plots_extrapolation/
+
 
 Plots will be visible at:
 
