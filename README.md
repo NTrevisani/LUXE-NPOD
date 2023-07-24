@@ -95,6 +95,22 @@ Extrapolation at different dump-detector distances:
     python mkPlot.py --input_folder=rootfiles --particle=Neutrons --material=lead --length=Extrapolate_300 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
     python mkPlot.py --input_folder=rootfiles --particle=Photons  --material=lead --length=Extrapolate_300 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
 
+### Plot signal distributions
+
+Produce plots:
+
+    python3 plot_signal_distributions.py
+
+Copy plots to the etp webpage:
+
+    mkdir -p /etpwww/web/ntrevisa/public_html/2023_07_24/
+
+    cp -r  signal_plots /etpwww/web/ntrevisa/public_html/2023_07_24/
+    python gallery.py /etpwww/web/ntrevisa/public_html/2023_07_24/
+
+Plots will be visible at:
+
+    https://etpwww.etp.kit.edu/~ntrevisa/2023_07_24/
 
 ### Copy your plots on the web
 
