@@ -160,7 +160,7 @@ for norm in (True, False):
         
             
             if var == "photon_radius_cumulative":
-                plt.hist(bins, 
+                plt.hist(bins-bins[0], 
                          bins, 
                          range=x_range,
                          weights=entries,
@@ -176,16 +176,24 @@ for norm in (True, False):
                          label=my_label,
                          histtype='step')
                 
+            if 'radius' in var:
+                plt.xlim([0.0, 1.00])
             plt.ylim([0, 1.5*max_y])
-            plt.xlabel(xlabel)
-            plt.ylabel(ylabel)
-            plt.title(variable)
+            plt.xlabel(xlabel, loc = 'right', fontsize = 14, labelpad = 1)
+            plt.ylabel(ylabel, loc = 'top',   fontsize = 14)
+            plt.xticks(fontsize=14)
+            plt.yticks(fontsize=14)
+            # plt.title(variable, fontsize = 28)
+            plt.title(              "LUXE-NPOD",          fontsize = 14, fontweight = "bold", loc = 'left')
+            plt.figtext(0.34, 0.90, "(work in progress)", fontsize = 12, fontweight = "light")
             plt.legend()
-            output_name = '{}/{}.png'.format(output_directory, var)
+            output_name = '{}/{}'.format(output_directory, var)
             if norm == True:
-                output_name = '{}/{}_normalized.png'.format(output_directory, var)
-            plt.savefig(output_name)
+                output_name = '{}/{}_normalized'.format(output_directory, var)
+            plt.savefig(output_name + '.png')
+            plt.savefig(output_name + '.pdf')
         plt.close()
+
 
     #     plt.hist(bins[:-1], 
     #              bins, 
