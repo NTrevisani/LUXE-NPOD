@@ -102,15 +102,18 @@ for norm in (True, False):
         
         dict_list = []
         
+        # # A point close to the bottom-right edge of the exclusion plot
+        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_1969891329_mass_0.346737_distance_2.5_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_5.252172519661923e-06/", var))
+        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_2226503312_mass_0.346737_distance_2.0_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_5.252172519661923e-06/", var))
+        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_5148817684_mass_0.346737_distance_1.5_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_5.252172519661923e-06/", var))
         # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_2748393110_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_5.252172519661923e-06/", var))
-        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_6151305420_mass_0.1_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_5.252172519661923e-06/", var))
-        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_1609959775_mass_0.301995_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_2.4063341373555067e-06/", var))
 
-        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_1969891329_mass_0.346737_distance_2.5_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_5.252172519661923e-06/", var))
-        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_2226503312_mass_0.346737_distance_2.0_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_5.252172519661923e-06/", var))
-        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_5148817684_mass_0.346737_distance_1.5_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_5.252172519661923e-06/", var))
-        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_2748393110_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_5.252172519661923e-06/", var))
 
+        # One of our interested points: light ALP with large coupling [mass: 5.01187000e-02, coupling:  8.84595614e-04]
+        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_2380040305_mass_0.0501187_distance_2.0_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_0.0007759442308140531/", var))
+        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_3077700877_mass_0.0501187_distance_2.5_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_0.0007759442308140531/", var))
+        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_6392341119_mass_0.0501187_distance_1.5_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_0.0007759442308140531/", var))
+        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_9547209163_mass_0.0501187_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_0.0007759442308140531/", var))
 
         max_y = 0
 
@@ -149,45 +152,45 @@ for norm in (True, False):
             # Set y-axis range
             if norm == True:
                 y = np.max(entries) / ((bins[1] - bins[0]) * np.trapz(entries))
-                if y > max_y : 
+                if y > max_y :
                     max_y = y
             else:
                 y = np.max(entries)
-                if y > max_y : 
+                if y > max_y :
                     max_y = y
                 
-            my_label = "mass = {} - coupling = {} - decay volume = {}".format(mass, round(coupling,8), decay_volume)
+            my_label = "mass = {} - coupling = {} - decay volume = {}".format(round(float(mass),4), round(coupling,4), decay_volume)
         
-            
             if var == "photon_radius_cumulative":
-                plt.hist(bins-bins[0], 
-                         bins, 
+                plt.hist(bins-bins[0],
+                         bins,
                          range=x_range,
                          weights=entries,
                          density=norm,
                          label=my_label,
                          histtype='step')
             else:
-                plt.hist(bins[:-1], 
-                         bins, 
+                plt.hist(bins[:-1],
+                         bins,
                          range=x_range,
                          weights=entries,
                          density=norm,
                          label=my_label,
                          histtype='step')
                 
-            if 'radius' in var:
+            if 'radius' in var or 'distance' in var:
                 plt.xlim([0.0, 1.00])
             plt.ylim([0, 1.5*max_y])
-            plt.xlabel(xlabel, loc = 'right', fontsize = 14, labelpad = 1)
+            plt.xlabel(xlabel, loc = 'right', fontsize = 14, labelpad = -2)
             plt.ylabel(ylabel, loc = 'top',   fontsize = 14)
             plt.xticks(fontsize=14)
             plt.yticks(fontsize=14)
-            # plt.title(variable, fontsize = 28)
             plt.title(              "LUXE-NPOD",          fontsize = 14, fontweight = "bold", loc = 'left')
             plt.figtext(0.34, 0.90, "(work in progress)", fontsize = 12, fontweight = "light")
             plt.legend()
-            output_name = '{}/{}'.format(output_directory, var)
+            output_folder_name = f'{output_directory}/mass_{mass}_coupling_{coupling}/' # mass_0.346737_coupling_5.252172519661923e-06
+            os.system(f'mkdir -p {output_folder_name}')
+            output_name = f'{output_folder_name}/{var}'
             if norm == True:
                 output_name = '{}/{}_normalized'.format(output_directory, var)
             plt.savefig(output_name + '.png')

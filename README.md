@@ -95,11 +95,81 @@ Extrapolation at different dump-detector distances:
     python mkPlot.py --input_folder=rootfiles --particle=Neutrons --material=lead --length=Extrapolate_300 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
     python mkPlot.py --input_folder=rootfiles --particle=Photons  --material=lead --length=Extrapolate_300 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
 
+
 ### Plot signal distributions
 
-Produce plots:
+Source the needed cvmfs setup:
 
-    python3 plot_signal_distributions.py
+    source /cvmfs/sft.cern.ch/lcg/views/LCG_102rc1/x86_64-centos7-gcc11-opt/setup.sh
+
+Produce signal kinematical distributions and exclusion limits:
+
+    python plot_signal_distributions.py
+
+Plot exclusion limits:
+
+    python plot_limits.py --decay_volume 2.5 --radius 1.0 --excl_list 2550818117
+    python plot_limits.py --decay_volume 2.0 --radius 1.0
+    python plot_limits.py --decay_volume 1.5 --radius 1.0
+    python plot_limits.py --decay_volume 1.0 --radius 1.0
+
+    python plot_2D_contour.py --radius 1.0
+
+
+    python plot_limits.py --decay_volume 2.5 --radius 0.5
+    python plot_limits.py --decay_volume 2.0 --radius 0.5
+    python plot_limits.py --decay_volume 1.5 --radius 0.5
+    python plot_limits.py --decay_volume 1.0 --radius 0.5
+
+    python plot_2D_contour.py --radius 0.5
+
+
+    python plot_limits.py --decay_volume 2.5 --radius 0.3
+    python plot_limits.py --decay_volume 2.0 --radius 0.3
+    python plot_limits.py --decay_volume 1.5 --radius 0.3
+    python plot_limits.py --decay_volume 1.0 --radius 0.3
+
+    python plot_2D_contour.py --radius 0.3
+
+
+    python plot_2D_contour.py --radius 0.5 --scan_radii 1 --decay_volume 1.0
+    python plot_2D_contour.py --radius 0.5 --scan_radii 1 --decay_volume 1.5
+    python plot_2D_contour.py --radius 0.5 --scan_radii 1 --decay_volume 2.0
+    python plot_2D_contour.py --radius 0.5 --scan_radii 1 --decay_volume 2.5
+
+Plot exclusion limits vs minimum photons separation:
+
+    python plot_limits.py --decay_volume 1.0 --radius 1.0
+    python plot_limits.py --decay_volume 1.0 --radius 1.0 --minseparation 0.01
+    python plot_limits.py --decay_volume 1.0 --radius 1.0 --minseparation 0.02 --excl_list 4305401700
+    python plot_limits.py --decay_volume 1.0 --radius 1.0 --minseparation 0.05
+
+    python plot_2D_contour.py --radius 1.0 --scan_separation 1 --decay_volume 1.0
+
+
+    python plot_limits.py --decay_volume 1.5 --radius 1.0
+    python plot_limits.py --decay_volume 1.5 --radius 1.0 --minseparation 0.01
+    python plot_limits.py --decay_volume 1.5 --radius 1.0 --minseparation 0.02 --excl_list 9954835239,9587931072
+    python plot_limits.py --decay_volume 1.5 --radius 1.0 --minseparation 0.05
+
+    python plot_2D_contour.py --radius 1.0 --scan_separation 1 --decay_volume 1.5
+
+
+    python plot_limits.py --decay_volume 2.0 --radius 1.0
+    python plot_limits.py --decay_volume 2.0 --radius 1.0 --minseparation 0.01 --excl_list 2340249156,1878311950,2339173445
+    python plot_limits.py --decay_volume 2.0 --radius 1.0 --minseparation 0.02 --excl_list 3157945829,2712751416,4169018722
+    python plot_limits.py --decay_volume 2.0 --radius 1.0 --minseparation 0.05 --excl_list 3792642379
+
+    python plot_2D_contour.py --radius 1.0 --scan_separation 1 --decay_volume 2.0
+
+
+    python plot_limits.py --decay_volume 2.5 --radius 1.0
+    python plot_limits.py --decay_volume 2.5 --radius 1.0 --minseparation 0.01
+    python plot_limits.py --decay_volume 2.5 --radius 1.0 --minseparation 0.02 --excl_list 1293342293
+    python plot_limits.py --decay_volume 2.5 --radius 1.0 --minseparation 0.05
+
+    python plot_2D_contour.py --radius 1.0 --scan_separation 1 --decay_volume 2.5
+
 
 Copy plots to the etp webpage:
 
