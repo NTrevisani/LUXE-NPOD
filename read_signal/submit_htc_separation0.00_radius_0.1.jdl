@@ -1,0 +1,16 @@
+Universe = docker
+docker_image = mschnepf/slc7-condocker
+
+executable      = ./run_condor_separation0.00_radius_0.1.sh
+stdout          = condor_log/lxsignal_separation0.00_radius_0.1_$(Item).out
+stderr          = condor_log/lxsignal_separation0.00_radius_0.1_$(Item).err
+log             = condor_log/lxsignal_separation0.00_radius_0.1_$(Item).log
+request_cpus    = 1
+request_memory  = 2000
+requirements = (TARGET.ProvidesCPU == TRUE) && (TARGET.ProvidesEKPResources ==True)
+
+accounting_group=beamdump
+
+args            = $(Item)
+# queue Item from seq 0 1 0 |
+queue Item from seq 0 1 101 |
