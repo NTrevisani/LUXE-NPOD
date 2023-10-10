@@ -136,8 +136,8 @@ if __name__ == '__main__':
         raise ValueError("Please specify the radius")
     radius = opt.radius
 
-    if opt.minseparation == 'DEFAULT' :
-        raise ValueError("Please specify the minimum photons separation")
+    # if opt.minseparation == 'DEFAULT' :
+        # raise ValueError("Please specify the minimum photons separation")
     minseparation = opt.minseparation
 
     excl_list = []
@@ -154,7 +154,8 @@ if __name__ == '__main__':
     for directory in directories:
         if f"distance_{decay_volume}"    not in directory: continue
         if f"detectorradius_{radius}"    not in directory: continue
-        if f"separation_{minseparation}" not in directory: continue
+        if minseparation == "DEFAULT" and "separation" in directory: continue
+        if minseparation != "DEFAULT" and f"separation_{minseparation}" not in directory: continue
 
         skip = 0
         for exclude in excl_list:
@@ -199,4 +200,6 @@ if __name__ == '__main__':
     print(limit_2D)
     
     output_name = f"2D_contour_decay_volume_{decay_volume}_det_radius_{radius}_separation_{minseparation}.npy"
+    if minseparation == "DEFAULT":
+        output_name = f"2D_contour_decay_volume_{decay_volume}_det_radius_{radius}.npy"
     np.save(output_name, limit_2D)

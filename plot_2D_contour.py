@@ -106,14 +106,18 @@ if __name__ == '__main__':
     elif (scan_radii == True and scan_separation == False):
 
         # Read numpy objects
+        arr_list.append(np.load(f'2D_contour_decay_volume_{decay_volume}_det_radius_0.1.npy', allow_pickle=True))
+        arr_list.append(np.load(f'2D_contour_decay_volume_{decay_volume}_det_radius_0.2.npy', allow_pickle=True))
         arr_list.append(np.load(f'2D_contour_decay_volume_{decay_volume}_det_radius_0.3.npy', allow_pickle=True))
         arr_list.append(np.load(f'2D_contour_decay_volume_{decay_volume}_det_radius_0.5.npy', allow_pickle=True))
         arr_list.append(np.load(f'2D_contour_decay_volume_{decay_volume}_det_radius_1.0.npy', allow_pickle=True))
         
         labels = [
-            "R $_D$ = 0.3 m",
-            "R $_D$ = 0.5 m",
-            "R $_D$ = 1.0 m",
+            "R $_{Det}$ = 0.1 m",
+            "R $_{Det}$ = 0.2 m",
+            "R $_{Det}$ = 0.3 m",
+            "R $_{Det}$ = 0.5 m",
+            "R $_{Det}$ = 1.0 m",
         ]
 
         # Plotting

@@ -35,30 +35,51 @@ import sys, os
 def read_file(folder_name = "/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_6142550095_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_9.806757216915766e-06/",
               variable = "photon_radius_1"):
 
+    # Check if we are considering files with minumum separation between photons
+    global separation
+    separation = 0
+    if "separation" in folder_name:
+        separation = 1
+
+    print(f"Separation: {separation}")
+
     # Split folder name and create full file name
-    folder_simplified = folder_name.replace('/', '')
+    folder_simplified = folder_name.replace('/', '_')
     folder_split = folder_simplified.split("_")
 
+    ###############
     # folder_split:
-    # ['storage9rquishpeluxenpodphase1signalLUXE-NPODoutput', 'condorluxe', '6142550095', 'mass', '0.346737', 'distance', '1.0', 'targetlength', '1.0', 'minenergy', '0.5', 'detectorradius', '0.5', 'spectrum', 'primarylc', 'phase', '1', 'primary', 'li', '9.806757216915766e-06']
+    ###############
 
-    random_number   = folder_split[2]
-    mass            = folder_split[4]
-    decay_volume    = folder_split[6]
-    dump_length     = folder_split[8]
-    min_energy      = folder_split[10]
-    detector_radius = folder_split[12]
-    spectrum        = folder_split[14]
-    coupling        = folder_split[19]
+    # Without separation: ['', 'storage', '9', 'rquishpe', 'luxe', 'npod', 'phase1', 'signal', 'LUXE-NPOD', 'output', 'condor', 'luxe', '6142550095', 'mass', '0.346737', 'distance', '1.0', 'targetlength', '1.0', 'minenergy', '0.5', 'detectorradius', '0.5', 'spectrum', 'primary', 'lc', 'phase', '1', 'primary', 'li', '9.80675716915766e-06', '']
 
-    print("random_number   : {}".format(folder_split[2]))
-    print("mass            : {}".format(folder_split[4]))
-    print("decay_volume    : {}".format(folder_split[6]))
-    print("dump_length     : {}".format(folder_split[8]))
-    print("min_energy      : {}".format(folder_split[10]))
-    print("detector_radius : {}".format(folder_split[12]))
-    print("spectrum        : {}".format(folder_split[14]))
-    print("coupling        : {}".format(folder_split[19]))
+    # With separation: ['', 'storage', '9', 'rquishpe', 'luxe', 'npod', 'phase1', 'signal', 'LUXE-NPOD', 'output', 'condor', 'luxe', '0129369347', 'mass', '0.346737', 'distance', '1.0', 'targetlength', '1.0', 'minenergy', '0.5', 'detectorradius', '1.0', 'spectrum', 'primary', 'separation', '0.0', 'lc', 'phase', '1', 'primary', 'li', '5.252172519661923e-06', '']
+
+    min_separation  = ''
+    random_number   = folder_split[12]
+    mass            = folder_split[14]
+    decay_volume    = folder_split[16]
+    dump_length     = folder_split[18]
+    min_energy      = folder_split[20]
+    detector_radius = folder_split[22]
+    spectrum        = folder_split[24]
+    coupling        = folder_split[30]
+    if separation == 1:
+        min_separation = folder_split[26]
+        coupling       = folder_split[32]
+
+    print("random_number   : {}".format(folder_split[12]))
+    print("mass            : {}".format(folder_split[14]))
+    print("decay_volume    : {}".format(folder_split[16]))
+    print("dump_length     : {}".format(folder_split[18]))
+    print("min_energy      : {}".format(folder_split[20]))
+    print("detector_radius : {}".format(folder_split[22]))
+    if separation == 1:
+        print("separation      : {}".format(folder_split[26]))
+        print("coupling        : {}".format(folder_split[32]))
+    else:
+        print("coupling        : {}".format(folder_split[30]))
+
 
     file_name = folder_name + variable + ".npy"
 
@@ -73,6 +94,7 @@ def read_file(folder_name = "/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NP
     arr_dict['coupling']     = coupling
     arr_dict['variable']     = variable
     arr_dict['decay_volume'] = decay_volume
+    arr_dict['separation']   = min_separation
 
     return arr_dict
 
@@ -108,12 +130,24 @@ for norm in (True, False):
         # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_5148817684_mass_0.346737_distance_1.5_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_5.252172519661923e-06/", var))
         # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_2748393110_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_5.252172519661923e-06/", var))
 
+        # A point close to the bottom-right edge of the exclusion plot - scanning here the minimum distance
+        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_0129369347_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.0/lc_phase_1_primary_li_5.252172519661923e-06/", var))
+        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_7932358700_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.01/lc_phase_1_primary_li_5.252172519661923e-06/", var))
+        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_3464419000_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.02/lc_phase_1_primary_li_5.252172519661923e-06/", var))
+        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_2405142246_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.05/lc_phase_1_primary_li_5.252172519661923e-06/", var))
 
-        # One of our interested points: light ALP with large coupling [mass: 5.01187000e-02, coupling:  8.84595614e-04]
-        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_2380040305_mass_0.0501187_distance_2.0_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_0.0007759442308140531/", var))
-        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_3077700877_mass_0.0501187_distance_2.5_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_0.0007759442308140531/", var))
-        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_6392341119_mass_0.0501187_distance_1.5_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_0.0007759442308140531/", var))
-        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_9547209163_mass_0.0501187_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_0.0007759442308140531/", var))
+
+        # # One of our interested points: light ALP with large coupling [mass: 5.01187000e-02, coupling:  8.84595614e-04]
+        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_3077700877_mass_0.0501187_distance_2.5_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_0.0007759442308140531/", var))
+        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_2380040305_mass_0.0501187_distance_2.0_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_0.0007759442308140531/", var))
+        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_6392341119_mass_0.0501187_distance_1.5_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_0.0007759442308140531/", var))
+        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_9547209163_mass_0.0501187_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_0.0007759442308140531/", var))
+
+        # # One of our interested points: light ALP with large coupling [mass: 5.01187000e-02, coupling:  8.84595614e-04] - scanning here the minimum distance
+        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_1024665565_mass_0.0501187_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.0/lc_phase_1_primary_li_0.0007759442308140531/", var))
+        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_4149326682_mass_0.0501187_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.01/lc_phase_1_primary_li_0.0007759442308140531/", var))
+        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_9293166185_mass_0.0501187_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.02/lc_phase_1_primary_li_0.0007759442308140531/", var))
+        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_7519683781_mass_0.0501187_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.05/lc_phase_1_primary_li_0.0007759442308140531/", var))
 
         max_y = 0
 
@@ -134,6 +168,7 @@ for norm in (True, False):
             print(arr_dict['coupling'])
             print(arr_dict['variable'])
             print(arr_dict['decay_volume'])
+            print(arr_dict['separation'])
             
             if var == "photon_radius_cumulative":
                 entries      = arr_dict['frac']
@@ -141,13 +176,14 @@ for norm in (True, False):
             else:
                 entries      = arr_dict['entries']
                 bins         = arr_dict['bins']
-            xlabel       = arr_dict['xlabel']
-            ylabel       = arr_dict['ylabel']
-            x_range      = arr_dict['xrange']
-            mass         = arr_dict['mass']
-            coupling     = float(arr_dict['coupling'])
-            variable     = arr_dict['variable']
-            decay_volume = arr_dict['decay_volume']
+            xlabel         = arr_dict['xlabel']
+            ylabel         = arr_dict['ylabel']
+            x_range        = arr_dict['xrange']
+            mass           = arr_dict['mass']
+            coupling       = float(arr_dict['coupling'])
+            variable       = arr_dict['variable']
+            decay_volume   = arr_dict['decay_volume']
+            min_separation = arr_dict['separation']
             
             # Set y-axis range
             if norm == True:
@@ -160,6 +196,8 @@ for norm in (True, False):
                     max_y = y
                 
             my_label = "mass = {} - coupling = {} - decay volume = {}".format(round(float(mass),4), round(coupling,4), decay_volume)
+            if separation == 1:
+                my_label = "mass = {} - coupling = {} - min separation = {}".format(round(float(mass),4), round(coupling,4), min_separation)
         
             if var == "photon_radius_cumulative":
                 plt.hist(bins-bins[0],
@@ -189,10 +227,12 @@ for norm in (True, False):
             plt.figtext(0.34, 0.90, "(work in progress)", fontsize = 12, fontweight = "light")
             plt.legend()
             output_folder_name = f'{output_directory}/mass_{mass}_coupling_{coupling}/' # mass_0.346737_coupling_5.252172519661923e-06
+            if separation == 1:
+                output_folder_name = f'{output_directory}/mass_{mass}_coupling_{coupling}_separation/'
             os.system(f'mkdir -p {output_folder_name}')
             output_name = f'{output_folder_name}/{var}'
             if norm == True:
-                output_name = '{}/{}_normalized'.format(output_directory, var)
+                output_name = f'{output_folder_name}/{var}_normalized'
             plt.savefig(output_name + '.png')
             plt.savefig(output_name + '.pdf')
         plt.close()

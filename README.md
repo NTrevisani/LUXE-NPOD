@@ -4,7 +4,7 @@ Repository with code for LUXE-NPOD studies
 
 ### Before starting
 
-Sourse required to use RDataFrame:
+Source required to use RDataFrame:
 
     source /cvmfs/sft.cern.ch/lcg/views/LCG_102rc1/x86_64-centos7-gcc11-opt/setup.sh 
 
@@ -96,13 +96,13 @@ Extrapolation at different dump-detector distances:
     python mkPlot.py --input_folder=rootfiles --particle=Photons  --material=lead --length=Extrapolate_300 --BX=0.1 --number="_0" --output_folder=plots_extrapolation
 
 
-### Plot signal distributions
+### Plot signal distributions and exclusion limits
 
 Source the needed cvmfs setup:
 
     source /cvmfs/sft.cern.ch/lcg/views/LCG_102rc1/x86_64-centos7-gcc11-opt/setup.sh
 
-Produce signal kinematical distributions and exclusion limits:
+Produce signal kinematical distributions:
 
     python plot_signal_distributions.py
 
@@ -132,10 +132,34 @@ Plot exclusion limits:
     python plot_2D_contour.py --radius 0.3
 
 
+    python plot_limits.py --decay_volume 2.5 --radius 0.2
+    python plot_limits.py --decay_volume 2.0 --radius 0.2
+    python plot_limits.py --decay_volume 1.5 --radius 0.2
+    python plot_limits.py --decay_volume 1.0 --radius 0.2
+
+    python plot_2D_contour.py --radius 0.2
+
+
+    python plot_limits.py --decay_volume 2.5 --radius 0.1 --minseparation 0.0
+    mv 2D_contour_decay_volume_2.5_det_radius_0.1_separation_0.0.npy 2D_contour_decay_volume_2.5_det_radius_0.1.npy
+
+    python plot_limits.py --decay_volume 2.0 --radius 0.1 --minseparation 0.0
+    mv 2D_contour_decay_volume_2.0_det_radius_0.1_separation_0.0.npy 2D_contour_decay_volume_2.0_det_radius_0.1.npy
+
+    python plot_limits.py --decay_volume 1.5 --radius 0.1 --minseparation 0.0
+    mv 2D_contour_decay_volume_1.5_det_radius_0.1_separation_0.0.npy 2D_contour_decay_volume_1.5_det_radius_0.1.npy
+
+    python plot_limits.py --decay_volume 1.0 --radius 0.1 --minseparation 0.0
+    mv 2D_contour_decay_volume_1.0_det_radius_0.1_separation_0.0.npy 2D_contour_decay_volume_1.0_det_radius_0.1.npy
+
+    python plot_2D_contour.py --radius 0.1
+
+
     python plot_2D_contour.py --radius 0.5 --scan_radii 1 --decay_volume 1.0
     python plot_2D_contour.py --radius 0.5 --scan_radii 1 --decay_volume 1.5
     python plot_2D_contour.py --radius 0.5 --scan_radii 1 --decay_volume 2.0
     python plot_2D_contour.py --radius 0.5 --scan_radii 1 --decay_volume 2.5
+
 
 Plot exclusion limits vs minimum photons separation:
 
