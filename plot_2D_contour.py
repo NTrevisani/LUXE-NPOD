@@ -84,7 +84,7 @@ if __name__ == '__main__':
             )
         plt.title(              "LUXE-NPOD",            fontsize = 14, fontweight = "bold", loc = 'left')
         plt.figtext(0.34, 0.90, "(work in progress)",   fontsize = 12, fontweight = "normal")
-        plt.figtext(0.69, 0.84, f"R $_D$ = {radius} m", fontsize = 12, fontweight = "normal")
+        plt.figtext(0.69, 0.84, f"R $_{{Det}}$ = {radius} m", fontsize = 12, fontweight = "normal")
         plt.figtext(0.69, 0.79, "L $_{D}$ = 1.0 m",     fontsize = 12, fontweight = "normal")
         plt.xscale("log")
         plt.yscale("log")
