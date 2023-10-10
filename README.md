@@ -8,6 +8,13 @@ Source required to use RDataFrame:
 
     source /cvmfs/sft.cern.ch/lcg/views/LCG_102rc1/x86_64-centos7-gcc11-opt/setup.sh 
 
+### Produce kinematical distributions for signal and exclusion plots
+
+To produce kinematical distributions for the signal and extract exclusion plots, just go to the 'read_signal' directory. 
+Here, we collected some code originally produced by Torben, with some minor changes we introduced to allow for more flexibility:
+
+    cd read_signal 
+
 ### Post-process G4 simulation files
 
 Legacy cfg:
