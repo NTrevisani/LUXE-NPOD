@@ -24,6 +24,13 @@ python plot_signal_distributions.py
 
 Mass-couplings points are selected based on:
 https://indico.desy.de/event/35797/#12-status-of-npod-activities
+
+A few interesting (mass,coupling) points, selected based on the exlusion limits from 
+python plot_limits.py --decay_volume 1.0 --radius 0.1 --minseparation 0.0
+- [5.01187000e-02 8.92870945e-04]
+- [7.58578000e-02 3.39519992e-04]
+- [1.00000000e-01 1.78870696e-04]
+
 """
 
 import numpy as np
@@ -108,6 +115,7 @@ variables = [
     "photon_radius_2",
     "photon_radius_max",
     "photons_distance",
+    "photons_distance_zoom",
     "photon_time_1",
     "photon_time_2",
     "photon_radius_cumulative",
@@ -130,12 +138,11 @@ for norm in (True, False):
         # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_5148817684_mass_0.346737_distance_1.5_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_5.252172519661923e-06/", var))
         # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_2748393110_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_5.252172519661923e-06/", var))
 
-        # A point close to the bottom-right edge of the exclusion plot - scanning here the minimum distance
-        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_0129369347_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.0/lc_phase_1_primary_li_5.252172519661923e-06/", var))
-        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_7932358700_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.01/lc_phase_1_primary_li_5.252172519661923e-06/", var))
-        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_3464419000_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.02/lc_phase_1_primary_li_5.252172519661923e-06/", var))
-        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_2405142246_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.05/lc_phase_1_primary_li_5.252172519661923e-06/", var))
-
+        # # A point close to the bottom-right edge of the exclusion plot - scanning here the minimum distance
+        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_0129369347_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.0/lc_phase_1_primary_li_5.252172519661923e-06/", var))
+        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_7932358700_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.01/lc_phase_1_primary_li_5.252172519661923e-06/", var))
+        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_3464419000_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.02/lc_phase_1_primary_li_5.252172519661923e-06/", var))
+        # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_2405142246_mass_0.346737_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.05/lc_phase_1_primary_li_5.252172519661923e-06/", var))
 
         # # One of our interested points: light ALP with large coupling [mass: 5.01187000e-02, coupling:  8.84595614e-04]
         # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_3077700877_mass_0.0501187_distance_2.5_targetlength_1.0_minenergy_0.5_detectorradius_0.5_spectrum_primary/lc_phase_1_primary_li_0.0007759442308140531/", var))
@@ -148,6 +155,18 @@ for norm in (True, False):
         # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_4149326682_mass_0.0501187_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.01/lc_phase_1_primary_li_0.0007759442308140531/", var))
         # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_9293166185_mass_0.0501187_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.02/lc_phase_1_primary_li_0.0007759442308140531/", var))
         # dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_7519683781_mass_0.0501187_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_1.0_spectrum_primary_separation_0.05/lc_phase_1_primary_li_0.0007759442308140531/", var))
+
+        # A few interesting (mass,coupling) points, selected based on the exlusion limits from 
+        # python plot_limits.py --decay_volume 1.0 --radius 0.1 --minseparation 0.0
+        # - [5.01187000e-02 8.92870945e-04]
+        # - [7.58578000e-02 3.39519992e-04]
+        # - [1.00000000e-01 1.78870696e-04]
+
+        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_0518440001_mass_0.0501187_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_0.1_spectrum_primary_separation_0.0/lc_phase_1_primary_li_0.00090704141811168/", var))
+        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_4357658355_mass_0.0758578_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_0.1_spectrum_primary_separation_0.0/lc_phase_1_primary_li_0.00035550642792139456/", var))
+        dict_list.append(read_file("/storage/9/rquishpe/luxe/npod/phase1/signal/LUXE-NPOD/output_condor/luxe_0942295009_mass_0.1_distance_1.0_targetlength_1.0_minenergy_0.5_detectorradius_0.1_spectrum_primary_separation_0.0/lc_phase_1_primary_li_0.00019039740150507642/", var))
+
+
 
         max_y = 0
 
@@ -169,6 +188,7 @@ for norm in (True, False):
             print(arr_dict['variable'])
             print(arr_dict['decay_volume'])
             print(arr_dict['separation'])
+            print(arr_dict['xrange'])
             
             if var == "photon_radius_cumulative":
                 entries      = arr_dict['frac']
@@ -218,6 +238,8 @@ for norm in (True, False):
                 
             if 'radius' in var or 'distance' in var:
                 plt.xlim([0.0, 1.00])
+            if 'zoom' in var:
+                plt.xlim([0.0, 0.1])
             plt.ylim([0, 1.5*max_y])
             plt.xlabel(xlabel, loc = 'right', fontsize = 14, labelpad = -2)
             plt.ylabel(ylabel, loc = 'top',   fontsize = 14)
