@@ -284,7 +284,7 @@ def plot_xsec(list_xsec, **plotdict):
     plt.close(fig)
     
     
-def displace(list_all_temp, mass, distance, target_end, target_length, ctau, r_x, r_y):
+def displace(list_all_temp, mass, distance, target_end, target_length, ctau, r_x, r_y, csv_file_alp, csv_file_photon):
     
     # ---------------------------
     # random number generator
@@ -295,11 +295,13 @@ def displace(list_all_temp, mass, distance, target_end, target_length, ctau, r_x
     list_photon = []
 
     planeNormal = np.array([0, 0, distance])
-    planePoint = np.array([0, 0, distance]) #Any point on the plane
+    planePoint = np.array([0, 0, distance]) # Any point on the plane
 
     epsilon = 1e-8
     
-    speed_of_light = 299792458 #meter per second
+    speed_of_light = 299792458 # meter per second
+
+    print(len(list_all_temp))
 
     for idx, (ee, ww, xx, cc, results) in enumerate(list_all_temp):
 
@@ -317,6 +319,9 @@ def displace(list_all_temp, mass, distance, target_end, target_length, ctau, r_x
         la = results[0]
         lg = results[1]
         
+        # print("la length = {}".format(len(la)))
+        # print("lg length = {}".format(len(lg)))
+
         for p in la:
             
             mag = np.sqrt(p[0]**2 + p[1]**2 + p[2]**2) #3-vector magnitude
@@ -339,6 +344,21 @@ def displace(list_all_temp, mass, distance, target_end, target_length, ctau, r_x
                 # print(f'ALP x: {prod_x}->{decay_x}, y: {prod_y}->{decay_y}, z: {prod_z}->{decay_z}, t: {decay_time}, beta={p.beta}')
                 templist_vtx.append([decay_x, decay_y, decay_z, d, decay_time])    
                 
+                # ALP (vertex) structure:
+                # 0: decay vertex x position [m]
+                # 1: decay vertex y position [m]
+                # 2: decay vertex z position [m]
+                # 3: decay vertex distance from center of the dump [m]
+                # 4: vertex decay time [ns]
+                csv_file_alp.write("{};{};{};{};{}\n".format(
+                    decay_x, 
+                    decay_y, 
+                    decay_z, 
+                    d, 
+                    decay_time
+                )
+                )
+
         stop_1 = time.perf_counter()
         # print(f'time_1 = {stop_1-start}')
 
@@ -393,7 +413,34 @@ def displace(list_all_temp, mass, distance, target_end, target_length, ctau, r_x
                 # print(f'gamma2 t: {t2}, beta={p2.beta}')
                 
 
+            # Photon structure: 
+            # 0:  distance between the two photons at detector surface [m]
+            # 1:  leading photon distance for detector center [m]
+            # 2:  sub-leading photon distance for detector center [m]
+            # 3:  leading photon energy [GeV]
+            # 4:  sub-leading photon energy [GeV]
+            # 5:  leading photon x position at detector surface [m]
+            # 6:  leading photon y position at detector surface [m]
+            # 7:  sub-leading photon x position at detector surface [m]
+            # 8:  sub-leading photon y position at detector surface [m]
+            # 9:  leading photon time of arrival at detector surface [ns]
+            # 10: sub-leading photon time of arrival at detector surface [ns]
             templist_photon.append([dist, r1, r2, lg[idx*2][3], lg[idx*2+1][3], i1_x, i1_y, i2_x, i2_y, t1, t2])
+
+            csv_file_photon.write("{};{};{};{};{};{};{};{};{};{};{}\n".format(
+                dist,
+                r1,
+                r2,
+                lg[idx*2][3],
+                lg[idx*2+1][3],
+                i1_x, 
+                i1_y,
+                i2_x, 
+                i2_y,
+                t1,
+                t2,
+            )
+            )
 
         list_alp_vtx.append(templist_vtx)
         list_photon.append(templist_photon)

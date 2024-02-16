@@ -204,13 +204,13 @@ for lc in laserconfig:
         list_all_temp = []
         
         # energy, xsec, photonweight, rootfile
-        for x in laser_dict[lc]: #this runs over a full list of files with photon weights corresponding to the laser configuration
+        for x in laser_dict[lc]: # this runs over a full list of files with photon weights corresponding to the laser configuration
             energy = x[0]
             xsec_mg = x[1]
             weight = x[2]
             xsec_scaled = xsec_mg*xsec_rescale
             
-            #find entry in list_results
+            # find entry in list_results
             list_e = [x[0] for x in list_results]
             index = utils.find_nearest_index(list_e, energy)
             
@@ -250,8 +250,26 @@ for lc in laserconfig:
             
         np.save(os.path.join(save_dir_temp, 'metainfo.npy'), metadict)
         
+        # CSV file to dump photons information. No cuts applied.
+        csv_file_alp = open(save_dir_temp + "/Dump_alp.csv", "w")
+        csv_file_alp.write("vtx x [mm];vtx y [mm];vtx z [mm];vtx dist [mm];vtx decay time [ns]")
+        csv_file_alp.write("\n")
+
+        csv_file_photon = open(save_dir_temp + "/Dump_photon.csv", "w")
+        csv_file_photon.write("Phs dist [mm];Ph 1 radius [mm];Ph 2 radius [mm];Ph 1 E [GeV];Ph 2 E [GeV];Ph 1 x [mm];Ph 1 y [mm];Ph 2 x [mm];Ph 2 y [mm];Ph 1 TOA [ns];Ph 2 TOA [ns]")
+        csv_file_photon.write("\n")
+
         # displace vertex 
-        list_alp_vtx, list_photon = utils.displace(list_all_temp, mass, distance, target_end, target_length, ctau, r_x, r_y)
+        list_alp_vtx, list_photon = utils.displace(list_all_temp, mass, distance, target_end, target_length, ctau, r_x, r_y, csv_file_alp, csv_file_photon)
+
+        print("list photon length = {}".format(len(list_photon)))
+        print("First entry of list photons: {}".format(list_photon[0]))
+
+        print("list ALPs vtx length = {}".format(len(list_alp_vtx)))
+        print("First entry of ALPs vtx: {}".format(list_alp_vtx[0]))
+
+        csv_file_alp.close()
+        csv_file_photon.close()
 
         # run event selection
         list_mask = []
